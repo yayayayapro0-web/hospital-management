@@ -36,6 +36,5 @@ CREATE TABLE appointments (
     FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
 
--- مستخدم مدير افتراضي
 INSERT INTO users (username, password, role) 
-VALUES ('admin', '123admin', 'admin');
+VALUES ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');

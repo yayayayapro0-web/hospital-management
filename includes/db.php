@@ -1,12 +1,12 @@
 <?php
-$host = "localhost";
-$user = "root";
+$server = "localhost";
+$username = "root";
 $password = "";
 $database = "hospital";
 
-$conn = mysqli_connect($host, $user, $password, $database);
+$conn = mysqli_connect($server, $username, $password, $database);
 
-if (!$conn) {
-    die("فشل الاتصال: " . mysqli_connect_error());
+if(!$conn){
+    die("Connection failed");
 }
 ?>
