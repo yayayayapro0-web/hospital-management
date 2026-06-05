@@ -6,6 +6,7 @@ if(!isset($_SESSION['logged'])){
     exit();
 }
 
+// حذف
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM appointments WHERE id=$id");
@@ -13,7 +14,19 @@ if(isset($_GET['delete'])){
     exit();
 }
 
+// إضافة
+if(isset($_POST['add'])){
+    $patient_id = $_POST['patient_id'];
+    $doctor_id = $_POST['doctor_id'];
+    $date = $_POST['date'];
+    mysqli_query($conn, "INSERT INTO appointments (patient_id, doctor_id, date) VALUES ('$patient_id', '$doctor_id', '$date')");
+    header("Location:appointments.php");
+    exit();
+}
+
 $result = mysqli_query($conn, "SELECT appointments.*, patients.name AS patient_name, doctors.name AS doctor_name FROM appointments LEFT JOIN patients ON appointments.patient_id = patients.id LEFT JOIN doctors ON appointments.doctor_id = doctors.id");
+$patients = mysqli_query($conn, "SELECT * FROM patients");
+$doctors = mysqli_query($conn, "SELECT * FROM doctors");
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -25,8 +38,29 @@ $result = mysqli_query($conn, "SELECT appointments.*, patients.name AS patient_n
 
 <h2>إدارة المواعيد</h2>
 <a href="dashboard.php">رجوع للوحة التحكم</a><br><br>
-<a href="addAppointment.php">إضافة موعد جديد</a><br><br>
 
+<h3>إضافة موعد جديد</h3>
+<form action="appointments.php" method="POST">
+    <label>المريض:</label>
+    <select name="patient_id">
+        <option value="">اختر المريض</option>
+        <?php while($row = mysqli_fetch_assoc($patients)){ ?>
+        <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+        <?php } ?>
+    </select><br><br>
+    <label>الطبيب:</label>
+    <select name="doctor_id">
+        <option value="">اختر الطبيب</option>
+        <?php while($row = mysqli_fetch_assoc($doctors)){ ?>
+        <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+        <?php } ?>
+    </select><br><br>
+    <label>التاريخ:</label>
+    <input type="date" name="date"><br><br>
+    <input type="submit" name="add" value="إضافة">
+</form>
+
+<br>
 <table border="1">
     <tr>
         <th>ID</th>

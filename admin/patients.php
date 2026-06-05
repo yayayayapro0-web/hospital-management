@@ -6,9 +6,31 @@ if(!isset($_SESSION['logged'])){
     exit();
 }
 
+// حذف
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM patients WHERE id=$id");
+    header("Location:patients.php");
+    exit();
+}
+
+// إضافة
+if(isset($_POST['add'])){
+    $name = $_POST['name'];
+    $age = $_POST['age'];
+    $phone = $_POST['phone'];
+    mysqli_query($conn, "INSERT INTO patients (name, age, phone) VALUES ('$name', '$age', '$phone')");
+    header("Location:patients.php");
+    exit();
+}
+
+// تعديل
+if(isset($_POST['edit'])){
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    $age = $_POST['age'];
+    $phone = $_POST['phone'];
+    mysqli_query($conn, "UPDATE patients SET name='$name', age='$age', phone='$phone' WHERE id=$id");
     header("Location:patients.php");
     exit();
 }
@@ -25,8 +47,19 @@ $result = mysqli_query($conn, "SELECT * FROM patients");
 
 <h2>إدارة المرضى</h2>
 <a href="dashboard.php">رجوع للوحة التحكم</a><br><br>
-<a href="addPatient.php">إضافة مريض جديد</a><br><br>
 
+<h3>إضافة مريض جديد</h3>
+<form action="patients.php" method="POST">
+    <label>الاسم:</label>
+    <input type="text" name="name"><br><br>
+    <label>العمر:</label>
+    <input type="number" name="age"><br><br>
+    <label>الهاتف:</label>
+    <input type="text" name="phone"><br><br>
+    <input type="submit" name="add" value="إضافة">
+</form>
+
+<br>
 <table border="1">
     <tr>
         <th>ID</th>
@@ -42,7 +75,15 @@ $result = mysqli_query($conn, "SELECT * FROM patients");
         <td><?php echo $row['name']; ?></td>
         <td><?php echo $row['age']; ?></td>
         <td><?php echo $row['phone']; ?></td>
-        <td><a href="editPatient.php?id=<?php echo $row['id']; ?>">تعديل</a></td>
+        <td>
+            <form action="patients.php" method="POST">
+                <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                <input type="text" name="name" value="<?php echo $row['name']; ?>">
+                <input type="number" name="age" value="<?php echo $row['age']; ?>">
+                <input type="text" name="phone" value="<?php echo $row['phone']; ?>">
+                <input type="submit" name="edit" value="حفظ">
+            </form>
+        </td>
         <td><a href="patients.php?delete=<?php echo $row['id']; ?>">حذف</a></td>
     </tr>
     <?php } ?>

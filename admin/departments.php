@@ -6,9 +6,27 @@ if(!isset($_SESSION['logged'])){
     exit();
 }
 
+// حذف
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM departments WHERE id=$id");
+    header("Location:departments.php");
+    exit();
+}
+
+// إضافة
+if(isset($_POST['add'])){
+    $name = $_POST['name'];
+    mysqli_query($conn, "INSERT INTO departments (name) VALUES ('$name')");
+    header("Location:departments.php");
+    exit();
+}
+
+// تعديل
+if(isset($_POST['edit'])){
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    mysqli_query($conn, "UPDATE departments SET name='$name' WHERE id=$id");
     header("Location:departments.php");
     exit();
 }
@@ -25,8 +43,15 @@ $result = mysqli_query($conn, "SELECT * FROM departments");
 
 <h2>إدارة الأقسام</h2>
 <a href="dashboard.php">رجوع للوحة التحكم</a><br><br>
-<a href="addDepartment.php">إضافة قسم جديد</a><br><br>
 
+<h3>إضافة قسم جديد</h3>
+<form action="departments.php" method="POST">
+    <label>اسم القسم:</label>
+    <input type="text" name="name"><br><br>
+    <input type="submit" name="add" value="إضافة">
+</form>
+
+<br>
 <table border="1">
     <tr>
         <th>ID</th>
@@ -38,7 +63,13 @@ $result = mysqli_query($conn, "SELECT * FROM departments");
     <tr>
         <td><?php echo $row['id']; ?></td>
         <td><?php echo $row['name']; ?></td>
-        <td><a href="editDepartment.php?id=<?php echo $row['id']; ?>">تعديل</a></td>
+        <td>
+            <form action="departments.php" method="POST">
+                <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                <input type="text" name="name" value="<?php echo $row['name']; ?>">
+                <input type="submit" name="edit" value="حفظ">
+            </form>
+        </td>
         <td><a href="departments.php?delete=<?php echo $row['id']; ?>">حذف</a></td>
     </tr>
     <?php } ?>
