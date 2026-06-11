@@ -1,12 +1,12 @@
 <?php
 session_start();
 include '../includes/db.php';
+include '../includes/validation.php';
 if(!isset($_SESSION['logged'])){
     header("Location:../index.php");
     exit();
 }
 
-// حذف
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM appointments WHERE id=$id");
@@ -14,11 +14,10 @@ if(isset($_GET['delete'])){
     exit();
 }
 
-// إضافة
 if(isset($_POST['add'])){
-    $patient_id = $_POST['patient_id'];
-    $doctor_id = $_POST['doctor_id'];
-    $date = $_POST['date'];
+    $patient_id = validate($_POST['patient_id']);
+    $doctor_id = validate($_POST['doctor_id']);
+    $date = validate($_POST['date']);
     mysqli_query($conn, "INSERT INTO appointments (patient_id, doctor_id, date) VALUES ('$patient_id', '$doctor_id', '$date')");
     header("Location:appointments.php");
     exit();

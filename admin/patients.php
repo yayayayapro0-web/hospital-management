@@ -1,12 +1,13 @@
 <?php
 session_start();
 include '../includes/db.php';
+include '../includes/validation.php';
 if(!isset($_SESSION['logged'])){
     header("Location:../index.php");
     exit();
 }
 
-// حذف
+
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM patients WHERE id=$id");
@@ -14,22 +15,21 @@ if(isset($_GET['delete'])){
     exit();
 }
 
-// إضافة
 if(isset($_POST['add'])){
-    $name = $_POST['name'];
-    $age = $_POST['age'];
-    $phone = $_POST['phone'];
+    $name = validate($_POST['name']);
+    $age = validate($_POST['age']);
+    $phone = validate($_POST['phone']);
     mysqli_query($conn, "INSERT INTO patients (name, age, phone) VALUES ('$name', '$age', '$phone')");
     header("Location:patients.php");
     exit();
 }
 
-// تعديل
+
 if(isset($_POST['edit'])){
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $age = $_POST['age'];
-    $phone = $_POST['phone'];
+    $id = validate($_POST['id']);
+    $name = validate($_POST['name']);
+    $age = validate($_POST['age']);
+    $phone = validate($_POST['phone']);
     mysqli_query($conn, "UPDATE patients SET name='$name', age='$age', phone='$phone' WHERE id=$id");
     header("Location:patients.php");
     exit();

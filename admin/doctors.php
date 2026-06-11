@@ -1,12 +1,12 @@
 <?php
 session_start();
 include '../includes/db.php';
+include '../includes/validation.php';
 if(!isset($_SESSION['logged'])){
     header("Location:../index.php");
     exit();
 }
 
-// حذف
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM doctors WHERE id=$id");
@@ -14,20 +14,18 @@ if(isset($_GET['delete'])){
     exit();
 }
 
-// إضافة
 if(isset($_POST['add'])){
-    $name = $_POST['name'];
-    $department_id = $_POST['department_id'];
+    $name = validate($_POST['name']);
+    $department_id = validate($_POST['department_id']);
     mysqli_query($conn, "INSERT INTO doctors (name, department_id) VALUES ('$name', '$department_id')");
     header("Location:doctors.php");
     exit();
 }
 
-// تعديل
 if(isset($_POST['edit'])){
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $department_id = $_POST['department_id'];
+    $id = validate($_POST['id']);
+    $name = validate($_POST['name']);
+    $department_id = validate($_POST['department_id']);
     mysqli_query($conn, "UPDATE doctors SET name='$name', department_id='$department_id' WHERE id=$id");
     header("Location:doctors.php");
     exit();

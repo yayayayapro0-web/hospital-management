@@ -1,12 +1,12 @@
 <?php
 session_start();
 include '../includes/db.php';
+include '../includes/validation.php';
 if(!isset($_SESSION['logged'])){
     header("Location:../index.php");
     exit();
 }
 
-// حذف
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM departments WHERE id=$id");
@@ -14,18 +14,16 @@ if(isset($_GET['delete'])){
     exit();
 }
 
-// إضافة
 if(isset($_POST['add'])){
-    $name = $_POST['name'];
+    $name = validate($_POST['name']);
     mysqli_query($conn, "INSERT INTO departments (name) VALUES ('$name')");
     header("Location:departments.php");
     exit();
 }
 
-// تعديل
 if(isset($_POST['edit'])){
-    $id = $_POST['id'];
-    $name = $_POST['name'];
+    $id = validate($_POST['id']);
+    $name = validate($_POST['name']);
     mysqli_query($conn, "UPDATE departments SET name='$name' WHERE id=$id");
     header("Location:departments.php");
     exit();
